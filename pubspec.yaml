@@ -1,0 +1,19 @@
+name: monitor_local_notification
+description: "Persistent local notification stats for the Monitor package."
+version: 0.1.0
+repository: https://github.com/amaan-0331/monitor_local_notification
+
+environment:
+  sdk: ^3.10.4
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_local_notifications: ^18.0.1
+  monitor: ^1.1.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  very_good_analysis: ^10.0.0

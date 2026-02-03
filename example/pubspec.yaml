@@ -1,0 +1,23 @@
+name: monitor_local_notification_example
+description: "Example app for monitor_local_notification."
+publish_to: "none"
+version: 0.1.0
+
+environment:
+  sdk: ^3.10.4
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  monitor: ^1.1.1
+  monitor_local_notification:
+    path: ../
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  very_good_analysis: ^10.0.0
+
+flutter:
+  uses-material-design: true
