@@ -67,6 +67,25 @@ class MonitorLocalNotification {
     await _createNotificationChannel();
   }
 
+  Future<void> startWithPermissions({
+    MonitorNotificationConfig config = const MonitorNotificationConfig(),
+    AndroidInitializationSettings? androidInitializationSettings,
+    DarwinInitializationSettings? darwinInitializationSettings,
+    MonitorNotificationTapHandler? onTap,
+    bool alert = true,
+    bool badge = false,
+    bool sound = false,
+  }) async {
+    await initialize(
+      config: config,
+      androidInitializationSettings: androidInitializationSettings,
+      darwinInitializationSettings: darwinInitializationSettings,
+      onTap: onTap,
+    );
+    await requestPermissions(alert: alert, badge: badge, sound: sound);
+    await start();
+  }
+
   Future<bool> requestPermissions({
     bool alert = true,
     bool badge = false,
@@ -216,7 +235,7 @@ class MonitorLocalNotification {
   ) {
     final title = _buildTitle(snapshot.stats);
     final body = _buildBody(snapshot.stats);
-    final bigText = _buildBigText(snapshot);
+    final lines = _buildInboxLines(snapshot);
     final updatedAt = _formatUpdatedAt(snapshot.updatedAt);
 
     final androidDetails = AndroidNotificationDetails(
@@ -232,10 +251,12 @@ class MonitorLocalNotification {
       enableLights: _config.enableLights,
       showWhen: _config.showWhen,
       color: _config.color,
+      colorized: _config.colorized,
+      category: _config.category,
       ticker: _config.ticker,
       subText: _config.showUpdatedAt ? updatedAt : null,
-      styleInformation: BigTextStyleInformation(
-        bigText,
+      styleInformation: InboxStyleInformation(
+        lines,
         contentTitle: title,
         summaryText: body,
       ),
@@ -267,7 +288,7 @@ class MonitorLocalNotification {
     return 'HTTP ${stats.httpTotal} | MSG ${stats.messageTotal}';
   }
 
-  String _buildBigText(MonitorNotificationSnapshot snapshot) {
+  List<String> _buildInboxLines(MonitorNotificationSnapshot snapshot) {
     final stats = snapshot.stats;
     final width = _maxDigits([
       stats.httpTotal,
@@ -290,11 +311,11 @@ class MonitorLocalNotification {
         '| WARN ${_pad(stats.messageWarning, width)} | ERR ${_pad(stats.messageError, width)}';
 
     if (!_config.showLastEntry) {
-      return '$httpLine\n$msgLine';
+      return [httpLine, msgLine];
     }
 
     final lastLine = 'LAST ${snapshot.lastEntrySummary}';
-    return '$httpLine\n$msgLine\n$lastLine';
+    return [httpLine, msgLine, lastLine];
   }
 
   String _formatLastEntry(LogEntry? entry) {
@@ -406,6 +427,8 @@ class MonitorNotificationConfig {
     this.enableLights = false,
     this.importance = Importance.low,
     this.priority = Priority.low,
+    this.colorized = true,
+    this.category = AndroidNotificationCategory.service,
     this.color = const Color(0xFF2BC3B7),
     this.ticker = 'Monitor stats',
   });
@@ -429,6 +452,8 @@ class MonitorNotificationConfig {
   final bool enableLights;
   final Importance importance;
   final Priority priority;
+  final bool colorized;
+  final AndroidNotificationCategory category;
   final Color color;
   final String ticker;
 }

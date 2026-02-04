@@ -29,9 +29,7 @@ Future<void> main() async {
   Monitor.navigatorKey = GlobalKey<NavigatorState>();
   Monitor.init();
 
-  await MonitorLocalNotification.instance.initialize();
-  await MonitorLocalNotification.instance.requestPermissions();
-  await MonitorLocalNotification.instance.start();
+  await MonitorLocalNotification.instance.startWithPermissions();
 
   runApp(const MyApp());
 }
@@ -52,7 +50,7 @@ class MyApp extends StatelessWidget {
 ### Customization
 
 ```dart
-await MonitorLocalNotification.instance.initialize(
+await MonitorLocalNotification.instance.startWithPermissions(
   config: const MonitorNotificationConfig(
     notificationId: 9100,
     channelId: 'monitor_stats',

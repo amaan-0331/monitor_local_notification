@@ -13,9 +13,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Monitor.init();
 
-  await MonitorLocalNotification.instance.initialize();
-  await MonitorLocalNotification.instance.requestPermissions();
-  await MonitorLocalNotification.instance.start();
+  await MonitorLocalNotification.instance.startWithPermissions();
 
   runApp(const MyApp());
 }
